@@ -2,21 +2,21 @@
 
 ## Huh?
 
-So I was trying to implement a [bitonic sorting network](https://en.wikipedia.org/wiki/Bitonic_sorter) with
-SIMD intrinsics to sort an array of 8 floats. The code should look like this:
+So, as an exercise, I was trying to sort an array of 8 floats with SIMD intrinsics
+using a [bitonic sorting network](https://en.wikipedia.org/wiki/Bitonic_sorter). The code should look like this:
 
 ```
 __m128 r0 = array[0:4]
 __m128 r1 = array[4:8]
 for each round:
-    __m128 t0 = shuffle(lo, hi, ...) # move half of the elements to be compared to a register
-    __m128 t1 = shuffle(lo, hi, ...) # do the same for the other half
+    __m128 t0 = shuffle(r0, r1, ...) # move half of the elements to be compared to a register
+    __m128 t1 = shuffle(r0, r1, ...) # do the same for the other half
     __m128 min = _mm_min_ps(t0, t1)  # perform all comparisons in parallel
     __m128 max = _mm_min_ps(t0, t1)
     r0 = min                         # min/max are the new wires
     r1 = max
 array[0:4] = shuffle(r0, r1, ...)
-array[4:8] = shuffle(40, 41, ...)
+array[4:8] = shuffle(r0, r1, ...)
 ```
 
 This should be simple, but writing it by hand got a bit annoying because:
