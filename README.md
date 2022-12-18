@@ -12,7 +12,7 @@ for each round:
     __m128 t0 = shuffle(r0, r1, ...) # move half of the elements to be compared to a register
     __m128 t1 = shuffle(r0, r1, ...) # do the same for the other half
     __m128 min = _mm_min_ps(t0, t1)  # perform all comparisons in parallel
-    __m128 max = _mm_min_ps(t0, t1)
+    __m128 max = _mm_max_ps(t0, t1)
     r0 = min                         # min/max are the new wires
     r1 = max
 array[0:4] = shuffle(r0, r1, ...)
@@ -69,8 +69,6 @@ void sort_bitonic(std::array<float, 8>& arr)
     _mm_store_ps(arr.data() + 4, r33);
 }
 ```
-
-Seems to be about twice as fast as `std::sort`.
 
 ## TODO
 
